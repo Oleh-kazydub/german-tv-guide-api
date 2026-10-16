@@ -1,0 +1,43 @@
+{
+  "name": "german-tv-guide-api",
+  "version": "1.0.0",
+  "description": "Kostenlose deutsche TV-Programm API (JSON, RSS, Atom), CLI & MCP-Server für 19 Hauptsender (ARD, ZDF, RTL, ProSieben). Powered by fernsehprogramm.tech",
+  "main": "cli.mjs",
+  "type": "module",
+  "bin": {
+    "tv-programm": "./cli.mjs",
+    "german-tv": "./cli.mjs"
+  },
+  "scripts": {
+    "start": "node cli.mjs",
+    "jetzt": "node cli.mjs jetzt",
+    "primetime": "node cli.mjs 20-15"
+  },
+  "keywords": [
+    "fernsehprogramm",
+    "fernsehprogramm-api",
+    "tv-programm",
+    "epg",
+    "epg-deutschland",
+    "tv-guide",
+    "ard",
+    "zdf",
+    "rtl",
+    "prosieben",
+    "mcp-server",
+    "model-context-protocol",
+    "iptv-deutschland",
+    "xmltv",
+    "json-feed"
+  ],
+  "author": "Oleh Kazydub (https://fernsehprogramm.tech)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oleh-kazydub/german-tv-guide-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Oleh-kazydub/german-tv-guide-api/issues"
+  },
+  "homepage": "https://fernsehprogramm.tech"
+}

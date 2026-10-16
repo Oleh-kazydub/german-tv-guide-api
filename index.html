@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deutsches TV-Programm API (JSON, RSS, CLI & MCP) | Offene EPG-Schnittstelle</title>
+  <meta name="description" content="Kostenlose, tagesaktuelle JSON- und EPG-Schnittstelle für das deutsche Fernsehprogramm (19 Hauptsender wie ARD, ZDF, RTL, ProSieben). Offizielle API & Dokumentation.">
+  <link rel="canonical" href="https://oleh-kazydub.github.io/german-tv-guide-api/">
+  <meta property="og:title" content="Deutsches TV-Programm API & EPG Data (JSON, CLI & MCP)">
+  <meta property="og:description" content="Kostenlose EPG-Daten und JSON-Feeds für das deutsche Fernsehen. Powered by fernsehprogramm.tech">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://oleh-kazydub.github.io/german-tv-guide-api/">
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #131b2e;
+      --border: #23304d;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --code-bg: #050811;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0 1rem 4rem;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-hover);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(to right, #ffffff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.lead {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 780px;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: #1c2742;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    code {
+      background: var(--code-bg);
+      color: #38bdf8;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: #e2e8f0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .channel-pill {
+      display: block;
+      padding: 0.6rem 0.8rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .channel-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent-hover);
+      background: #19243d;
+    }
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: var(--accent-hover);
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "german-tv-guide-api",
+    "description": "Kostenlose deutsche TV-Programm API (JSON & EPG) für 19 Sender. Powered by fernsehprogramm.tech",
+    "codeRepository": "https://github.com/Oleh-kazydub/german-tv-guide-api",
+    "programmingLanguage": "JavaScript",
+    "author": {
+      "@type": "Person",
+      "name": "Oleh Kazydub"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <span class="badge">🚀 Open-Source EPG Data & API</span>
+      <h1>Deutsches Fernsehprogramm API & EPG Data</h1>
+      <p class="lead">
+        Kostenlose, tagesaktuelle JSON- und EPG-Schnittstelle für 19 deutsche TV-Hauptsender. Perfekt für Home Assistant, Smarthome-Widgets, Kodi, Medien-Scraper und KI-Assistenten.
+      </p>
+
+      <div class="cta-buttons">
+        <a href="https://fernsehprogramm.tech" class="btn btn-primary" target="_blank" rel="noopener">
+          👉 Zum offiziellen TV-Guide (fernsehprogramm.tech)
+        </a>
+        <a href="https://github.com/Oleh-kazydub/german-tv-guide-api" class="btn btn-secondary" target="_blank" rel="noopener">
+          ⭐ Auf GitHub ansehen
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>📡 Offene Endpoints (JSON, RSS, Atom)</h2>
+        <div class="card">
+          <p>Die Daten werden täglich aktualisiert und sind ohne Authentifizierung oder API-Key frei nutzbar:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Format</th>
+                <th>Endpoint URL</th>
+                <th>Einsatzzweck</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>JSON Feed (v1.1)</strong></td>
+                <td><code>https://fernsehprogramm.tech/feed.json</code></td>
+                <td>Apps, Home Assistant, Python/Node.js Skripte</td>
+              </tr>
+              <tr>
+                <td><strong>RSS 2.0 Feed</strong></td>
+                <td><code>https://fernsehprogramm.tech/feed.xml</code></td>
+                <td>Feedly, Feed-Reader, Discord/Telegram Bots</td>
+              </tr>
+              <tr>
+                <td><strong>Atom Feed</strong></td>
+                <td><code>https://fernsehprogramm.tech/feed.atom</code></td>
+                <td>Standard Atom XML-Reader & Syndication</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>⚡ Schnellstart mit CLI</h2>
+        <div class="card">
+          <p>Überprüfe direkt in deinem Terminal, was gerade im deutschen Live-Fernsehen läuft:</p>
+          <pre><code># Repository klonen
+git clone https://github.com/Oleh-kazydub/german-tv-guide-api.git
+cd german-tv-guide-api
+
+# Was läuft jetzt im TV?
+node cli.mjs jetzt
+
+# Primetime Highlights um 20:15 Uhr
+node cli.mjs 20-15
+
+# Nach Sender filtern (z.B. ARD, ZDF, ProSieben)
+node cli.mjs sender ard</code></pre>
+        </div>
+      </section>
+
+      <section>
+        <h2>🤖 Model Context Protocol (MCP Server für Claude & Cursor)</h2>
+        <div class="card">
+          <p>Verbinde dein KI-Modell direkt mit dem deutschen Fernsehprogramm. Trage folgenden Block in deine <code>claude_desktop_config.json</code> ein:</p>
+          <pre><code>{
+  "mcpServers": {
+    "fernsehprogramm": {
+      "command": "python",
+      "args": ["-m", "mcp_server"]
+    }
+  }
+}</code></pre>
+          <p>Frage Claude einfach: <em>„Was läuft heute um 20:15 auf ProSieben?“</em> oder <em>„Finde mir heute Abend Krimis im TV“</em>.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>📺 Alle 19 unterstützten Sender (Detailübersichten & Mediatheken)</h2>
+        <p style="color: var(--text-muted);">Klicke auf einen Sender, um das 24-Stunden-Programm, Livestreams und Mediatheken-Links auf fernsehprogramm.tech abzurufen:</p>
+        
+        <div class="grid">
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/ard" target="_blank">Das Erste (ARD)</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/zdf" target="_blank">ZDF</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/rtl" target="_blank">RTL</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/prosieben" target="_blank">ProSieben</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/sat1" target="_blank">SAT.1</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/vox" target="_blank">VOX</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/kabel-eins" target="_blank">Kabel Eins</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/rtl2" target="_blank">RTL ZWEI</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/super-rtl" target="_blank">SUPER RTL</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/kika" target="_blank">KiKA</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/3sat" target="_blank">3sat</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/arte" target="_blank">ARTE</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/zdfneo" target="_blank">ZDFneo</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/nitro" target="_blank">NITRO</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/prosieben-maxx" target="_blank">ProSieben MAXX</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/dmax" target="_blank">DMAX</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/tele5" target="_blank">TELE 5</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/welt" target="_blank">WELT</a>
+          <a class="channel-pill" href="https://fernsehprogramm.tech/sender/phoenix" target="_blank">Phoenix</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>🔗 Schnelleinstiege & TV-Zeiten</h2>
+        <div class="card">
+          <ul style="list-style-type: none; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+            <li>👉 <a href="https://fernsehprogramm.tech/jetzt" style="color: var(--accent-hover);">Live im TV: Was läuft jetzt?</a></li>
+            <li>👉 <a href="https://fernsehprogramm.tech/heute-20-15" style="color: var(--accent-hover);">Primetime: Heute 20:15 Uhr</a></li>
+            <li>👉 <a href="https://fernsehprogramm.tech/late-night" style="color: var(--accent-hover);">Late-Night TV-Programm</a></li>
+            <li>👉 <a href="https://fernsehprogramm.tech/uhrzeit/20-00" style="color: var(--accent-hover);">TV-Programm um 20:00 Uhr</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        © 2026 <strong><a href="https://fernsehprogramm.tech">fernsehprogramm.tech</a></strong> – Moderner EPG-Guide & offene TV-Programmdaten für Deutschland, Österreich und die Schweiz.
+      </p>
+      <p style="margin-top: 0.5rem;">
+        Lizenziert unter der <a href="https://github.com/Oleh-kazydub/german-tv-guide-api/blob/main/LICENSE">MIT License</a>.
+      </p>
+    </footer>
+  </div>
+
+</body>
+</html>
