@@ -4,10 +4,7 @@
   "description": "Kostenlose deutsche TV-Programm API (JSON, RSS, Atom), CLI & MCP-Server für 19 Hauptsender (ARD, ZDF, RTL, ProSieben). Powered by fernsehprogramm.tech",
   "main": "cli.mjs",
   "type": "module",
-  "bin": {
-    "tv-programm": "./cli.mjs",
-    "german-tv": "./cli.mjs"
-  },
+  "bin": "./cli.mjs",
   "scripts": {
     "start": "node cli.mjs",
     "jetzt": "node cli.mjs jetzt",
